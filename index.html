@@ -114,6 +114,63 @@ main{padding:4px 16px 150px;max-width:640px;margin:0 auto}
 .total-row span:last-child{color:var(--amber-text)}
 .btn.wide{width:100%;min-height:54px;font-size:17px}
 .btn:disabled{opacity:.45;cursor:default}
+
+/* ── PICKER + BUY SHEET ────────────────────────────────────── */
+.err{color:#ff7a7a;margin:12px 0 0;font-size:14px;line-height:1.4}
+.btn.outline{background:transparent;border:2px solid var(--amber);color:var(--amber-text)}
+.btn.green{background:linear-gradient(90deg,#1b8f62,#2ed39a);color:#04170f}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--text)}
+.act-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.act-row .btn{min-height:54px;font-size:16px}
+.sel-wrap{margin:0 0 14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.chip{background:var(--amber);color:var(--amber-ink);font-weight:800;border-radius:10px;padding:6px 12px}
+.overlay{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center}
+.overlay[hidden]{display:none}
+.sheet{width:100%;max-width:640px;max-height:94dvh;display:flex;flex-direction:column;background:var(--bg);
+  border:1px solid var(--line);border-bottom:0;border-radius:26px 26px 0 0}
+.sheet-head{padding:20px 20px 0}
+.sheet-title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.sheet h2{margin:0;font-size:22px;line-height:1.25}
+.sub-line{margin-top:4px;color:var(--muted);font-size:15px}
+.tools{display:flex;gap:10px;flex:none}
+.tools .icon-btn{border-radius:14px}
+.tools .icon-btn.amber{background:var(--amber);color:var(--amber-ink);border-color:var(--amber)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.steps i{height:5px;border-radius:5px;background:var(--surface-2)}
+.steps i.on{background:var(--amber)}
+.sheet-body{overflow-y:auto;padding:16px 20px;flex:1;min-height:120px;-webkit-overflow-scrolling:touch}
+.sheet-foot{display:flex;gap:12px;padding:12px 20px calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line)}
+.sheet-foot .btn{flex:1;min-height:54px;font-size:16px}
+.sheet-foot .btn.ghost{flex:0 0 36%}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 14px;font-size:14px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:16px;height:16px;border-radius:5px;background:var(--surface-2)}
+.legend i.s{background:var(--amber)} .legend i.t{background:#5a1a1a}
+.grid{display:grid;grid-template-columns:repeat(8,1fr);gap:7px}
+.num{height:44px;padding:0;border:0;border-radius:10px;font-weight:700;font-size:12.5px;cursor:pointer;background:var(--surface-2);color:var(--text)}
+.num.taken{background:#5a1a1a;color:#e8b4b4;cursor:default}
+.num.sel{background:var(--amber);color:var(--amber-ink)}
+.sum{margin-bottom:18px}
+.sum-name{font-weight:800;font-size:18px}
+.field{display:block;margin:0 0 16px}
+.field>span{display:block;margin-bottom:8px;font-weight:600}
+.input{width:100%;height:52px;padding:0 14px;border-radius:14px;border:1px solid var(--line);background:var(--surface);color:var(--text);font:inherit;font-size:16px}
+.bank{display:flex;align-items:center;gap:12px;padding:12px 14px;margin-bottom:10px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);cursor:pointer}
+.bank.on{border-color:var(--amber);background:var(--amber-tint)}
+.bank-info{flex:1;min-width:0}
+.bank-name{font-weight:700}
+.bank-holder{font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bank-num{font-weight:700;font-variant-numeric:tabular-nums;word-break:break-all;text-align:right;max-width:46%}
+.copy{flex:none;height:36px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);color:var(--text);font-weight:600;cursor:pointer}
+.drop{display:block;text-align:center;padding:26px 14px;margin:0 0 16px;border:2px dashed var(--amber);border-radius:var(--radius);cursor:pointer;color:var(--text)}
+.drop small{display:block;margin-top:6px;color:var(--muted)}
+.drop b{display:block;margin-top:8px;color:var(--leaf);word-break:break-all}
+.drop input{position:absolute;opacity:0;width:1px;height:1px}
+.drop:focus-within{outline:2px solid var(--amber);outline-offset:2px}
+.done-box{text-align:center;padding:28px 0}
+.done-mark{width:84px;height:84px;margin:0 auto 18px;border-radius:22px;display:grid;place-items:center;background:rgba(31,169,113,.15);border:1px solid rgba(31,169,113,.5);color:var(--leaf)}
+.done-box p{margin:8px 0 0;color:var(--muted)}
 .footer{text-align:center;color:var(--muted);font-size:13px;padding:36px 0 0}
 
 /* ── BOTTOM NAV ────────────────────────────────────────────── */
@@ -198,6 +255,8 @@ main{padding:4px 16px 150px;max-width:640px;margin:0 auto}
   </button>
 </nav>
 
+<div class="overlay" id="overlay" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
+
 <script>
 /* ── SETTINGS: change these first ─────────────────────────── */
 var BRAND_NAME = "Car Lottery";   // <- the client's name shown in the header and footer
@@ -208,6 +267,13 @@ var DEFAULT_LANG = "am";          // am = Amharic, om = Afaan Oromoo, en = Engli
 var SUPABASE_URL = "https://pgkhehokzbswycbusdpv.supabase.co";
 var SUPABASE_KEY = "sb_publishable_oswzn51GD00Yj9T5Z8E9LA_F6xYuSBE";
 var CARS_TIMEOUT_MS = 12000;      // give up after 12 seconds on slow internet
+
+/* Bank accounts customers pay into. EDIT THESE to the client's real accounts. */
+var BANK_ACCOUNTS = [
+  { bank: "Commercial Bank of Ethiopia", holder: "Account holder name", number: "1000000000000" },
+  { bank: "Awash Bank",                  holder: "Account holder name", number: "0000000000000" },
+  { bank: "Dashen Bank",                 holder: "Account holder name", number: "0000000000000" }
+];
 
 /* ── TRANSLATIONS (one place for every word on screen) ────── */
 var I18N = {
@@ -221,7 +287,18 @@ var I18N = {
     noCars:"እስካሁን ምንም መኪና የለም", sold:"የተሸጡ", birr:"Birr",
     timeLeft:"የቀረ ጊዜ", days:"ቀናት", hours:"ሰዓት", minutes:"ደቂቃ", seconds:"ሰከንድ",
     filled:"የተሞላ", ticketsLeft:"የቀሩ ቲኬቶች", ticketPrice:"የቲኬት ዋጋ", total:"ጠቅላላ",
-    buy:"ቲኬት ይግዙ", soldOut:"ቲኬቶች አልቀዋል", ended:"ጊዜው አብቅቷል", carNotFound:"ይህ መኪና አልተገኘም"
+    buy:"ቲኬት ይግዙ", soldOut:"ቲኬቶች አልቀዋል", ended:"ጊዜው አብቅቷል", carNotFound:"ይህ መኪና አልተገኘም",
+    chooseNumbers:"የዕድል ቁጥሮችን ይምረጡ", quickPick:"ፈጣን ምረጫ", selectedNumbers:"የተመረጡ ቁጥሮች:",
+    pickTitle:"ቁጥሮችን ይምረጡ", pickSub:"{q} ቁጥር ይምረጡ ({s}/{q} ተመርጧል)", legendSelected:"ተመርጧል", legendTaken:"የተያዙ", legendFree:"ይገኛል",
+    selectMore:"{n} ተጨማሪ ቁጥር ይምረጡ", done:"ጨርስ", loadingNumbers:"ቁጥሮችን በመጫን ላይ…",
+    buyTitle:"ግዢዎን ያጠናቅቁ", stepOf:"ደረጃ {s} ከ 3", ticketsWord:"ቲኬቶች",
+    fullName:"ሙሉ ስም", fullNamePh:"ሙሉ ስምዎን ያስገቡ", phone:"ስልክ ቁጥር", phonePh:"ለምሳሌ 0912345678 ወይም +251912345678", continueBtn:"ቀጥል",
+    sendTo:"{amount} Birr ከታች ካሉት ሂሳቦች ወደ አንዱ ይላኩ", bankOptional:"ክፍያ የላኩበትን የባንክ ሂሳብ ይምረጡ (አማራጭ)", copy:"ቅዳ", copied:"ተቀድቷል",
+    proofLabel:"የክፍያ ማረጋገጫ", proofUpload:"የክፍያ ማረጋገጫ ያስገቡ", proofHint:"PNG ወይም JPG እስከ 10MB", paidFrom:"የከፈሉበት ሂሳብ ቁጥር (አማራጭ)",
+    receivedTitle:"ደረሰኝ ተቀብለናል", receivedText:"ደረሰኝዎን ስናረጋግጥ እናሳውቅዎታለን።", ok:"እሺ",
+    errName:"ሙሉ ስምዎን ያስገቡ።", errPhone:"ትክክለኛ የስልክ ቁጥር ያስገቡ (ለምሳሌ 0912345678)።", errTaken:"አንዳንድ ቁጥሮች ተይዘዋል። እባክዎ እንደገና ይምረጡ።",
+    errClosed:"ይህ እጣ ተዘግቷል።", errExpired:"የያዙት ጊዜ አልፏል። እባክዎ እንደገና ይሞክሩ።", errNetwork:"ኢንተርኔትዎን ያረጋግጡና እንደገና ይሞክሩ።",
+    errGeneric:"የሆነ ችግር ተፈጥሯል። እንደገና ይሞክሩ።", errFile:"PNG ወይም JPG ፋይል ይምረጡ (ከ10MB በታች)።", errUpload:"ማረጋገጫውን መላክ አልተቻለም። እንደገና ይሞክሩ።"
   },
   om: {
     navHome:"Mana", navTickets:"Tikeetota", navProfile:"Piroofaayilii", back:"Deebi'i",
@@ -233,7 +310,18 @@ var I18N = {
     noCars:"Amma konkolaataan hin jiru", sold:"Kan gurgurame", birr:"Birr",
     timeLeft:"Yeroo hafe", days:"Guyyaa", hours:"Sa'aa", minutes:"Daqiiqaa", seconds:"Sekoondii",
     filled:"Guutame", ticketsLeft:"Tikeetota hafan", ticketPrice:"Gatii tikeetaa", total:"Waliigala",
-    buy:"Tikeeta bitadhu", soldOut:"Tikeetonni dhumaniiru", ended:"Yeroon xumurameera", carNotFound:"Konkolaataan hin argamne"
+    buy:"Tikeeta bitadhu", soldOut:"Tikeetonni dhumaniiru", ended:"Yeroon xumurameera", carNotFound:"Konkolaataan hin argamne",
+    chooseNumbers:"Lakkoofsota carraa filadhu", quickPick:"Saffisaan filadhu", selectedNumbers:"Lakkoofsota filataman:",
+    pickTitle:"Lakkoofsota filadhu", pickSub:"Lakkoofsa {q} filadhu ({s}/{q} filatameera)", legendSelected:"Filatame", legendTaken:"Qabame", legendFree:"Jira",
+    selectMore:"Lakkoofsa {n} dabalataa filadhu", done:"Xumuri", loadingNumbers:"Lakkoofsota fe'aa jira…",
+    buyTitle:"Bittaa kee xumuri", stepOf:"Tarkaanfii {s} / 3", ticketsWord:"tikeetota",
+    fullName:"Maqaa guutuu", fullNamePh:"Maqaa guutuu kee galchi", phone:"Lakkoofsa bilbilaa", phonePh:"Fkn 0912345678 yookaan +251912345678", continueBtn:"Itti fufi",
+    sendTo:"Birr {amount} akkaawuntiiwwan armaan gadii keessaa tokkotti ergi", bankOptional:"Akkaawuntii itti ergite filadhu (filannoo)", copy:"Waraabi", copied:"Waraabameera",
+    proofLabel:"Ragaa kaffaltii", proofUpload:"Ragaa kaffaltii ol-kaa'i", proofHint:"PNG yookaan JPG hanga 10MB", paidFrom:"Lakkoofsa akkaawuntii itti kaffalte (filannoo)",
+    receivedTitle:"Ragaan kee ni argame", receivedText:"Kaffaltii kee erga mirkaneessinee booda sif beeksifna.", ok:"Tole",
+    errName:"Maqaa guutuu kee galchi.", errPhone:"Lakkoofsa bilbilaa sirrii galchi (fkn 0912345678).", errTaken:"Lakkoofsonni muraasni qabamaniiru. Irra deebi'ii filadhu.",
+    errClosed:"Tikeetiin kun cufameera.", errExpired:"Yeroon qabannaa darbeera. Irra deebi'ii yaali.", errNetwork:"Interneetii kee mirkaneeffadhuu irra deebi'ii yaali.",
+    errGeneric:"Rakkoon uumameera. Irra deebi'ii yaali.", errFile:"Faayila PNG yookaan JPG filadhu (<10MB).", errUpload:"Ragaa erguun hin danda'amne. Irra deebi'ii yaali."
   },
   en: {
     navHome:"Home", navTickets:"Tickets", navProfile:"Profile", back:"Back",
@@ -245,7 +333,18 @@ var I18N = {
     noCars:"No cars yet", sold:"Sold", birr:"Birr",
     timeLeft:"Time left", days:"Days", hours:"Hours", minutes:"Minutes", seconds:"Seconds",
     filled:"filled", ticketsLeft:"tickets left", ticketPrice:"Ticket price", total:"Total",
-    buy:"Buy ticket", soldOut:"Sold out", ended:"Draw closed", carNotFound:"Car not found"
+    buy:"Buy ticket", soldOut:"Sold out", ended:"Draw closed", carNotFound:"Car not found",
+    chooseNumbers:"Choose lucky numbers", quickPick:"Quick pick", selectedNumbers:"Selected numbers:",
+    pickTitle:"Choose numbers", pickSub:"Select {q} ({s}/{q} chosen)", legendSelected:"Selected", legendTaken:"Taken", legendFree:"Available",
+    selectMore:"Select {n} more", done:"Done", loadingNumbers:"Loading numbers…",
+    buyTitle:"Complete your purchase", stepOf:"Step {s} of 3", ticketsWord:"tickets",
+    fullName:"Full name", fullNamePh:"Enter your full name", phone:"Phone number", phonePh:"e.g. 0912345678 or +251912345678", continueBtn:"Continue",
+    sendTo:"Send {amount} Birr to one of these accounts", bankOptional:"Which account did you pay into? (optional)", copy:"Copy", copied:"Copied",
+    proofLabel:"Payment proof", proofUpload:"Upload payment proof", proofHint:"PNG or JPG up to 10MB", paidFrom:"Account number you paid from (optional)",
+    receivedTitle:"Receipt received", receivedText:"We will notify you once we verify your payment.", ok:"OK",
+    errName:"Enter your full name.", errPhone:"Enter a valid phone number, like 0912345678.", errTaken:"Some numbers were just taken. Please choose again.",
+    errClosed:"This draw is closed.", errExpired:"Your reservation expired. Please try again.", errNetwork:"Check your internet and try again.",
+    errGeneric:"Something went wrong. Please try again.", errFile:"Choose a PNG or JPG file under 10MB.", errUpload:"Could not upload the proof. Please try again."
   }
 };
 
@@ -357,7 +456,7 @@ function renderCarList(){
 
 /* ── CAR DETAIL: #car-<id> ─────────────────────────────────── */
 var detailTimer = null;
-var detail = { carId: null, qty: 1 };
+var detail = { carId: null, qty: 1, selected: [], msg: "" };
 function pad2(n){ return (n < 10 ? "0" : "") + n; }
 
 function renderCarDetail(){
@@ -385,7 +484,8 @@ function renderCarDetail(){
     c.appendChild(b); box.appendChild(c); return;
   }
 
-  if(detail.carId !== car.id){ detail.carId = car.id; detail.qty = 1; }
+  if(detail.carId !== car.id){ detail.carId = car.id; detail.qty = 1; detail.selected = []; }
+  var flashMsg = detail.msg; detail.msg = "";
   var total = Number(car.total_tickets) || 0, sold = Number(car.sold_tickets) || 0;
   var left = Math.max(total - sold, 0);
   var pct = total ? Math.min(100, Math.floor(sold / total * 100)) : 0;
@@ -463,21 +563,348 @@ function renderCarDetail(){
   tot.appendChild(totVal); box.appendChild(tot);
 
   var unavailable = closed || left <= 0;
-  var buy = el("button", "btn wide", closed ? dict.ended : (left <= 0 ? dict.soldOut : dict.buy));
-  buy.type = "button"; buy.disabled = unavailable;
-  // NEXT STEP: open the buy sheet here (name + phone, payment proof, confirmation)
-  buy.addEventListener("click", function(){ /* step 3 */ });
-  box.appendChild(buy);
+  if(detail.selected.length > detail.qty) detail.selected = detail.selected.slice(0, detail.qty);
+
+  var chipsWrap = el("div", "sel-wrap");
+  function drawChips(){
+    chipsWrap.textContent = "";
+    if(!detail.selected.length) return;
+    chipsWrap.appendChild(el("div", "buy-label", dict.selectedNumbers));
+    var cs = el("div", "chips");
+    sortedSel().forEach(function(n){ cs.appendChild(el("span", "chip", String(n))); });
+    chipsWrap.appendChild(cs);
+  }
+  box.appendChild(chipsWrap);
+  if(flashMsg) box.appendChild(el("p", "err", flashMsg));
+
+  var pickBtn = el("button", "btn outline wide", dict.chooseNumbers);
+  pickBtn.type = "button"; pickBtn.disabled = unavailable;
+  pickBtn.addEventListener("click", function(){ openPicker(""); });
+  box.appendChild(pickBtn);
+
+  var acts = el("div", "act-row");
+  var quick = el("button", "btn", dict.quickPick); quick.type = "button"; quick.disabled = unavailable;
+  quick.addEventListener("click", quickPick);
+  var buyBtn = el("button", "btn green", closed ? dict.ended : (left <= 0 ? dict.soldOut : dict.buy));
+  buyBtn.type = "button"; buyBtn.disabled = unavailable;
+  buyBtn.addEventListener("click", openFlow);
+  acts.appendChild(quick); acts.appendChild(buyBtn); box.appendChild(acts);
 
   function sync(){
     out.textContent = detail.qty;
     totVal.textContent = formatNumber(detail.qty * price) + " " + dict.birr;
     minus.disabled = detail.qty <= 1 || unavailable;
     plus.disabled = detail.qty >= left || unavailable;
+    drawChips();
   }
-  minus.addEventListener("click", function(){ if(detail.qty > 1){ detail.qty--; sync(); } });
+  minus.addEventListener("click", function(){
+    if(detail.qty > 1){ detail.qty--; detail.selected = detail.selected.slice(0, detail.qty); sync(); }
+  });
   plus.addEventListener("click", function(){ if(detail.qty < left){ detail.qty++; sync(); } });
   sync();
+}
+
+
+/* ── BUYING: helpers ───────────────────────────────────────── */
+function fmt(str, o){ return String(str).replace(/\{(\w+)\}/g, function(m, k){ return o[k] !== undefined ? o[k] : m; }); }
+function sortedSel(){ return detail.selected.slice().sort(function(a, b){ return a - b; }); }
+function currentCar(){
+  var found = null;
+  carsState.rows.forEach(function(r){ if(r.id === detail.carId) found = r; });
+  return found;
+}
+function normPhone(p){
+  var d = String(p || "").replace(/\D/g, "");
+  if(d.indexOf("251") === 0 && d.length === 12) d = "0" + d.slice(3);
+  else if(d.length === 9) d = "0" + d;
+  return d;
+}
+function rpc(name, args){
+  return fetch(SUPABASE_URL + "/rest/v1/rpc/" + name, {
+    method: "POST",
+    headers: { apikey: SUPABASE_KEY, "Content-Type": "application/json" },
+    body: JSON.stringify(args)
+  }).then(function(r){
+    return r.json().catch(function(){ return null; }).then(function(j){
+      if(!r.ok) throw new Error((j && j.message) || ("HTTP " + r.status));
+      return j;
+    });
+  });
+}
+function uploadProof(path, file){
+  return fetch(SUPABASE_URL + "/storage/v1/object/payment-proofs/" + path, {
+    method: "POST",
+    headers: { apikey: SUPABASE_KEY, "Content-Type": file.type, "x-upsert": "false" },
+    body: file
+  }).then(function(r){ if(!r.ok) throw new Error("upload_failed"); });
+}
+var ERR_KEYS = { invalid_name:"errName", invalid_phone:"errPhone", numbers_taken:"errTaken", draw_closed:"errClosed",
+  car_not_found:"errClosed", order_not_found:"errExpired", upload_failed:"errUpload" };
+function errText(e){
+  var d = I18N[state.lang], k = ERR_KEYS[e && e.message];
+  if(k) return d[k];
+  if(e && e.name === "TypeError") return d.errNetwork;
+  return d.errGeneric;
+}
+function fetchTaken(carId){
+  return rpc("get_taken_numbers", { p_car_id: carId }).then(function(arr){
+    var map = {}; (Array.isArray(arr) ? arr : []).forEach(function(n){ map[n] = true; }); return map;
+  });
+}
+function randomFree(total, taken, qty){
+  var free = [];
+  for(var i = 1; i <= total; i++) if(!taken[i]) free.push(i);
+  for(var k = 0; k < qty && k < free.length; k++){
+    var j = k + Math.floor(Math.random() * (free.length - k));
+    var t = free[k]; free[k] = free[j]; free[j] = t;
+  }
+  return free.slice(0, qty);
+}
+function quickPick(){
+  var car = currentCar(); if(!car) return;
+  fetchTaken(car.id).then(function(taken){
+    var picks = randomFree(Number(car.total_tickets) || 0, taken, detail.qty);
+    if(picks.length < detail.qty) detail.msg = I18N[state.lang].soldOut; else detail.selected = picks;
+    renderCarDetail();
+  }).catch(function(e){ detail.msg = errText(e); renderCarDetail(); });
+}
+
+/* ── BOTTOM SHEET (shared by picker + buy flow) ───────────── */
+var overlay = document.getElementById("overlay");
+var sheet = document.getElementById("sheet");
+var sheetRender = null;
+var X_SVG = '<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+var SHUFFLE_SVG = '<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>';
+function openOverlay(){ overlay.hidden = false; document.body.style.overflow = "hidden"; }
+function closeOverlay(){
+  overlay.hidden = true; document.body.style.overflow = ""; sheet.textContent = ""; sheetRender = null;
+  if(currentRoute() === "car") renderCarDetail();
+}
+overlay.addEventListener("click", function(e){ if(e.target === overlay) closeOverlay(); });
+document.addEventListener("keydown", function(e){ if(e.key === "Escape" && !overlay.hidden) closeOverlay(); });
+
+function iconBtn(svg, label, extra, onClick){
+  var b = el("button", "icon-btn" + (extra ? " " + extra : "")); b.type = "button";
+  b.setAttribute("aria-label", label); b.innerHTML = svg; b.addEventListener("click", onClick); return b;
+}
+function sheetFrame(o){
+  sheet.textContent = "";
+  var head = el("div", "sheet-head"), row = el("div", "sheet-title-row"), left = el("div");
+  left.appendChild(el("h2", "", o.title));
+  if(o.sub) left.appendChild(o.sub);
+  var tools = el("div", "tools");
+  (o.tools || []).forEach(function(t){ tools.appendChild(t); });
+  tools.appendChild(iconBtn(X_SVG, "Close", "", closeOverlay));
+  row.appendChild(left); row.appendChild(tools); head.appendChild(row);
+  if(o.step){
+    var st = el("div", "steps");
+    for(var i = 1; i <= 3; i++){ var seg = el("i"); if(i <= o.step) seg.className = "on"; st.appendChild(seg); }
+    head.appendChild(st);
+  }
+  var body = el("div", "sheet-body"); body.appendChild(o.body);
+  var foot = el("div", "sheet-foot"); (o.foot || []).forEach(function(f){ foot.appendChild(f); });
+  sheet.appendChild(head); sheet.appendChild(body); sheet.appendChild(foot);
+}
+function mkBtn(cls, text, onClick, disabled){
+  var b = el("button", "btn " + cls, text); b.type = "button"; b.disabled = !!disabled;
+  if(onClick) b.addEventListener("click", onClick); return b;
+}
+
+/* ── NUMBER PICKER ─────────────────────────────────────────── */
+var picker = { taken: null, msg: "", failed: false };
+function openPicker(msg){
+  var car = currentCar(); if(!car) return;
+  picker.taken = null; picker.msg = msg || ""; picker.failed = false;
+  openOverlay(); renderPicker();
+  fetchTaken(car.id).then(function(map){
+    picker.taken = map;
+    detail.selected = detail.selected.filter(function(n){ return !map[n]; });
+    if(sheetRender === renderPicker) renderPicker();
+  }).catch(function(e){ picker.failed = true; picker.msg = errText(e); if(sheetRender === renderPicker) renderPicker(); });
+}
+function renderPicker(){
+  sheetRender = renderPicker;
+  var car = currentCar(); if(!car){ closeOverlay(); return; }
+  var d = I18N[state.lang], total = Number(car.total_tickets) || 0;
+  var body = el("div");
+  var lg = el("div", "legend");
+  [["s", d.legendSelected], ["", d.legendFree], ["t", d.legendTaken]].forEach(function(x){
+    var sp = el("span"); sp.appendChild(el("i", x[0])); sp.appendChild(document.createTextNode(x[1])); lg.appendChild(sp);
+  });
+  body.appendChild(lg);
+  if(picker.msg) body.appendChild(el("p", "err", picker.msg));
+  var grid = null;
+  if(picker.taken === null && !picker.failed){
+    body.appendChild(el("p", "sub-line", d.loadingNumbers));
+  } else if(picker.taken){
+    grid = el("div", "grid");
+    var html = "";
+    for(var i = 1; i <= total; i++){
+      var cls = picker.taken[i] ? " taken" : (detail.selected.indexOf(i) > -1 ? " sel" : "");
+      html += '<button type="button" class="num' + cls + '" data-n="' + i + '">' + (i < 100 ? ("00" + i).slice(-3) : i) + '</button>';
+    }
+    grid.innerHTML = html;                       // numbers only, safe
+    body.appendChild(grid);
+  }
+  var sub = el("div", "sub-line"), doneBtn = mkBtn("green", "", closeOverlay, true);
+  function update(){
+    var sel = detail.selected.length, q = detail.qty;
+    sub.textContent = fmt(d.pickSub, { q: q, s: sel });
+    doneBtn.disabled = sel < q;
+    doneBtn.textContent = sel < q ? fmt(d.selectMore, { n: q - sel }) : d.done;
+  }
+  function paint(){
+    if(!grid) return;
+    Array.prototype.forEach.call(grid.children, function(b){
+      if(!b.classList.contains("taken")) b.classList.toggle("sel", detail.selected.indexOf(Number(b.dataset.n)) > -1);
+    });
+  }
+  if(grid) grid.addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest(".num") : null;
+    if(!b || b.classList.contains("taken")) return;
+    var n = Number(b.dataset.n), i = detail.selected.indexOf(n);
+    if(i > -1) detail.selected.splice(i, 1);
+    else { if(detail.selected.length >= detail.qty) detail.selected.shift(); detail.selected.push(n); }
+    paint(); update();
+  });
+  var shuffle = iconBtn(SHUFFLE_SVG, d.quickPick, "amber", function(){
+    if(!picker.taken) return;
+    var picks = randomFree(total, picker.taken, detail.qty);
+    if(picks.length === detail.qty){ detail.selected = picks; paint(); update(); }
+  });
+  sheetFrame({ title: d.pickTitle, sub: sub, tools: [shuffle], body: body, foot: [doneBtn] });
+  update();
+}
+
+/* ── BUY FLOW (3 steps) ────────────────────────────────────── */
+var flow = { step: 1, orderId: null, key: "", name: "", phone: "", bank: "", paidFrom: "", file: null, msg: "", busy: false };
+function selKey(){ return detail.carId + ":" + sortedSel().join(","); }
+function openFlow(){
+  if(!currentCar()) return;
+  if(detail.selected.length !== detail.qty){ openPicker(""); return; }
+  if(!(flow.orderId && flow.key === selKey())){ flow.orderId = null; flow.file = null; flow.bank = ""; flow.paidFrom = ""; }
+  flow.key = selKey(); flow.msg = ""; flow.busy = false;
+  if(!flow.name) flow.name = load("name", "");
+  if(!flow.phone) flow.phone = load("phone", "");
+  flow.step = flow.orderId ? 2 : 1;
+  openOverlay(); renderFlow();
+}
+function field(label, type, ph, value, onInput, auto){
+  var wrap = el("label", "field"); wrap.appendChild(el("span", "", label));
+  var inp = el("input", "input"); inp.type = type; inp.placeholder = ph; inp.value = value; inp.autocomplete = auto || "off";
+  if(type === "tel") inp.setAttribute("inputmode", "tel");
+  inp.addEventListener("input", function(){ onInput(inp.value); });
+  wrap.appendChild(inp); return wrap;
+}
+function renderFlow(){
+  sheetRender = renderFlow;
+  var car = currentCar(); if(!car){ closeOverlay(); return; }
+  var d = I18N[state.lang], price = Number(car.ticket_price) || 0;
+  var count = flow.step === 3 ? 0 : detail.selected.length;
+  var body = el("div"), foot = [];
+  var stepSub = el("div", "sub-line", fmt(d.stepOf, { s: flow.step }));
+
+  if(flow.step === 1){
+    var sum = el("div", "card sum");
+    sum.appendChild(el("div", "sum-name", car.name));
+    sum.appendChild(el("div", "buy-label", count + " " + d.ticketsWord + " \u00D7 " + formatNumber(price) + " " + d.birr));
+    sum.appendChild(el("div", "buy-price", formatNumber(count * price) + " " + d.birr));
+    var cs = el("div", "chips");
+    sortedSel().forEach(function(n){ cs.appendChild(el("span", "chip", String(n))); });
+    sum.appendChild(cs); body.appendChild(sum);
+    body.appendChild(field(d.fullName, "text", d.fullNamePh, flow.name, function(v){ flow.name = v; }, "name"));
+    body.appendChild(field(d.phone, "tel", d.phonePh, flow.phone, function(v){ flow.phone = v; }, "tel"));
+    if(flow.msg) body.appendChild(el("p", "err", flow.msg));
+    foot = [mkBtn("ghost", d.back, closeOverlay), mkBtn("green", flow.busy ? "\u2026" : d.continueBtn, submitStep1, flow.busy)];
+  }
+
+  if(flow.step === 2){
+    var total = flow.orderTotal || (flow.key ? sortedSel().length * price : 0);
+    body.appendChild(el("p", "buy-label", fmt(d.sendTo, { amount: formatNumber(total) })));
+    body.appendChild(el("p", "sub-line", d.bankOptional));
+    var cards = [];
+    BANK_ACCOUNTS.forEach(function(b){
+      var card = el("div", "bank" + (flow.bank === b.bank ? " on" : "")); card.tabIndex = 0; card.setAttribute("role", "button");
+      var info = el("div", "bank-info"); info.appendChild(el("div", "bank-name", b.bank)); info.appendChild(el("div", "bank-holder", b.holder));
+      var cp = el("button", "copy", d.copy); cp.type = "button";
+      cp.addEventListener("click", function(e){
+        e.stopPropagation();
+        try{ navigator.clipboard.writeText(b.number); cp.textContent = d.copied; }catch(x){}
+      });
+      card.appendChild(info); card.appendChild(el("div", "bank-num", b.number)); card.appendChild(cp);
+      function choose(){ flow.bank = b.bank; cards.forEach(function(c){ c.el.classList.toggle("on", c.bank === b.bank); }); }
+      card.addEventListener("click", choose);
+      card.addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); choose(); } });
+      cards.push({ el: card, bank: b.bank }); body.appendChild(card);
+    });
+    body.appendChild(el("p", "buy-label", d.proofLabel));
+    var drop = el("label", "drop");
+    var fi = el("input"); fi.type = "file"; fi.accept = "image/png,image/jpeg";
+    drop.appendChild(fi); drop.appendChild(el("span", "", d.proofUpload)); drop.appendChild(el("small", "", d.proofHint));
+    var fname = el("b", "", flow.file ? flow.file.name : ""); drop.appendChild(fname);
+    var nextBtn = mkBtn("green", flow.busy ? "\u2026" : d.continueBtn, submitStep2, flow.busy || !flow.file);
+    fi.addEventListener("change", function(){
+      var f = fi.files && fi.files[0];
+      if(!f) return;
+      if((f.type !== "image/png" && f.type !== "image/jpeg") || f.size > 10 * 1024 * 1024){
+        flow.file = null; fname.textContent = ""; errBox.textContent = d.errFile; nextBtn.disabled = true; return;
+      }
+      flow.file = f; fname.textContent = f.name; errBox.textContent = ""; nextBtn.disabled = flow.busy;
+    });
+    body.appendChild(drop);
+    body.appendChild(field(d.paidFrom, "text", "", flow.paidFrom, function(v){ flow.paidFrom = v; }, "off"));
+    var errBox = el("p", "err", flow.msg); body.appendChild(errBox);
+    foot = [mkBtn("ghost", d.back, closeOverlay), nextBtn];
+  }
+
+  if(flow.step === 3){
+    var dn = el("div", "done-box");
+    var mark = el("div", "done-mark");
+    mark.innerHTML = '<svg width="44" height="44" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+    dn.appendChild(mark); dn.appendChild(el("h2", "", d.receivedTitle)); dn.appendChild(el("p", "", d.receivedText));
+    body.appendChild(dn);
+    foot = [mkBtn("green", d.ok, function(){
+      flow.orderId = null; flow.step = 1; flow.file = null; flow.key = "";
+      closeOverlay(); loadCars();
+    })];
+  }
+  sheetFrame({ title: d.buyTitle, sub: stepSub, step: flow.step, body: body, foot: foot });
+}
+function submitStep1(){
+  var d = I18N[state.lang];
+  if(flow.busy) return;
+  flow.msg = "";
+  if(flow.name.trim().length < 3){ flow.msg = d.errName; renderFlow(); return; }
+  if(!/^0[79]\d{8}$/.test(normPhone(flow.phone))){ flow.msg = d.errPhone; renderFlow(); return; }
+  flow.busy = true; renderFlow();
+  var car = currentCar();
+  rpc("create_order", { p_car_id: detail.carId, p_full_name: flow.name.trim(), p_phone: flow.phone, p_numbers: detail.selected })
+    .then(function(id){
+      flow.busy = false; flow.orderId = id; flow.step = 2;
+      flow.orderTotal = detail.selected.length * (Number(car.ticket_price) || 0);
+      save("name", flow.name.trim()); save("phone", normPhone(flow.phone));
+      renderFlow();
+    })
+    .catch(function(e){
+      flow.busy = false;
+      if(e.message === "numbers_taken"){ detail.selected = []; flow.orderId = null; closeOverlay(); openPicker(d.errTaken); return; }
+      flow.msg = errText(e); renderFlow();
+    });
+}
+function submitStep2(){
+  if(flow.busy || !flow.file) return;
+  flow.busy = true; flow.msg = ""; renderFlow();
+  var ext = flow.file.type === "image/png" ? "png" : "jpg";
+  var path = flow.orderId + "/" + Date.now() + "." + ext;
+  var note = [flow.bank ? "to: " + flow.bank : "", flow.paidFrom.trim() ? "from: " + flow.paidFrom.trim() : ""].filter(Boolean).join(" | ");
+  uploadProof(path, flow.file)
+    .then(function(){ return rpc("attach_payment", { p_order_id: flow.orderId, p_path: path, p_paid_from: note }); })
+    .then(function(){ flow.busy = false; flow.step = 3; detail.selected = []; renderFlow(); })
+    .catch(function(e){
+      flow.busy = false;
+      if(e.message === "order_not_found"){ flow.orderId = null; flow.step = 1; }
+      flow.msg = errText(e); renderFlow();
+    });
 }
 
 /* ── RENDER: language + theme ──────────────────────────────── */
@@ -494,6 +921,7 @@ function applyLanguage(){
   document.getElementById("themeBtn").setAttribute("aria-label", dict.theme);
   document.title = BRAND_NAME;
   renderCars();
+  if(sheetRender && !overlay.hidden) sheetRender();
 }
 function applyTheme(){
   document.documentElement.setAttribute("data-theme", state.theme);
