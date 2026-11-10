@@ -82,6 +82,38 @@ main{padding:4px 16px 150px;max-width:640px;margin:0 auto}
 .skeleton .car-img,.skeleton .sk{background:var(--surface-2);animation:pulse 1.4s ease-in-out infinite}
 .sk{height:14px;border-radius:7px;margin:8px 0}
 @keyframes pulse{50%{opacity:.45}}
+.car{cursor:pointer}
+.car:active{transform:scale(.99)}
+
+/* ── CAR DETAIL ────────────────────────────────────────────── */
+.hero{position:relative;border-radius:var(--radius);background:#fff;overflow:hidden;aspect-ratio:3/2;display:grid;place-items:center;color:#999}
+.hero img{width:100%;height:100%;object-fit:contain}
+.d-title{margin:18px 0 2px;font-size:28px;line-height:1.15;font-weight:800;overflow-wrap:anywhere}
+.d-sub{color:var(--lime);font-size:18px;font-weight:600;margin:0 0 16px}
+.timer{background:rgba(31,169,113,.12);border:1px solid rgba(31,169,113,.35);border-radius:var(--radius);padding:14px 14px 12px}
+.timer-title{color:var(--amber-text);font-weight:600;margin:0 0 10px}
+.timer-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.t-cell{text-align:center}
+.t-num{display:block;background:rgba(0,0,0,.35);border-radius:14px;padding:12px 0;font-size:28px;font-weight:800;color:var(--amber);font-variant-numeric:tabular-nums}
+:root[data-theme="light"] .t-num{background:rgba(0,0,0,.07);color:var(--amber-text)}
+.t-lbl{display:block;margin-top:6px;font-size:12px;color:var(--amber-text)}
+.prog-row{display:flex;justify-content:space-between;gap:10px;margin:20px 0 8px;font-size:15px;color:var(--muted)}
+.prog-row b{color:var(--leaf);font-weight:700}
+.bar{height:10px;border-radius:999px;background:var(--surface-2);overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--leaf),#2ed39a);border-radius:999px}
+.left-note{margin:8px 0 0;font-size:14px;color:var(--muted)}
+.buy-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:24px 0 8px}
+.buy-label{color:var(--muted);font-size:15px}
+.buy-price{color:var(--amber-text);font-weight:800;font-size:26px}
+.qty{display:flex;align-items:center;gap:14px}
+.qty button{width:52px;height:52px;border:0;border-radius:14px;font-size:26px;font-weight:700;cursor:pointer;background:var(--surface-2);color:var(--text)}
+.qty button.plus{background:var(--amber);color:var(--amber-ink)}
+.qty button:disabled{opacity:.4;cursor:default}
+.qty output{min-width:2ch;text-align:center;font-size:22px;font-weight:700}
+.total-row{display:flex;justify-content:space-between;margin:14px 0 14px;padding-top:14px;border-top:1px solid var(--line);font-weight:700}
+.total-row span:last-child{color:var(--amber-text)}
+.btn.wide{width:100%;min-height:54px;font-size:17px}
+.btn:disabled{opacity:.45;cursor:default}
 .footer{text-align:center;color:var(--muted);font-size:13px;padding:36px 0 0}
 
 /* ── BOTTOM NAV ────────────────────────────────────────────── */
@@ -144,6 +176,10 @@ main{padding:4px 16px 150px;max-width:640px;margin:0 auto}
     <div class="card scaffold">Later: phone number and saved details.</div>
   </section>
 
+  <section class="view" id="view-car">
+    <div id="carDetail" aria-live="polite"></div>
+  </section>
+
   <div class="footer" id="footer"></div>
 </main>
 
@@ -182,7 +218,10 @@ var I18N = {
     profileTitle:"መገለጫ", profileSub:"የእርስዎ መረጃ",
     rights:"ሁሉም መብቱ በህግ የተጠበቀ ነው።", theme:"ገጽታ",
     loading:"በመጫን ላይ…", loadError:"መኪኖችን መጫን አልተቻለም። ኢንተርኔትዎን ያረጋግጡ።", retry:"እንደገና ሞክር",
-    noCars:"እስካሁን ምንም መኪና የለም", sold:"የተሸጡ", birr:"Birr"
+    noCars:"እስካሁን ምንም መኪና የለም", sold:"የተሸጡ", birr:"Birr",
+    timeLeft:"የቀረ ጊዜ", days:"ቀናት", hours:"ሰዓት", minutes:"ደቂቃ", seconds:"ሰከንድ",
+    filled:"የተሞላ", ticketsLeft:"የቀሩ ቲኬቶች", ticketPrice:"የቲኬት ዋጋ", total:"ጠቅላላ",
+    buy:"ቲኬት ይግዙ", soldOut:"ቲኬቶች አልቀዋል", ended:"ጊዜው አብቅቷል", carNotFound:"ይህ መኪና አልተገኘም"
   },
   om: {
     navHome:"Mana", navTickets:"Tikeetota", navProfile:"Piroofaayilii", back:"Deebi'i",
@@ -191,7 +230,10 @@ var I18N = {
     profileTitle:"Piroofaayilii", profileSub:"Odeeffannoo kee",
     rights:"Mirgi hundi eegamaadha.", theme:"Bifa",
     loading:"Fe'aa jira…", loadError:"Konkolaattota fe'uun hin danda'amne. Interneetii kee mirkaneeffadhu.", retry:"Irra deebi'i yaali",
-    noCars:"Amma konkolaataan hin jiru", sold:"Kan gurgurame", birr:"Birr"
+    noCars:"Amma konkolaataan hin jiru", sold:"Kan gurgurame", birr:"Birr",
+    timeLeft:"Yeroo hafe", days:"Guyyaa", hours:"Sa'aa", minutes:"Daqiiqaa", seconds:"Sekoondii",
+    filled:"Guutame", ticketsLeft:"Tikeetota hafan", ticketPrice:"Gatii tikeetaa", total:"Waliigala",
+    buy:"Tikeeta bitadhu", soldOut:"Tikeetonni dhumaniiru", ended:"Yeroon xumurameera", carNotFound:"Konkolaataan hin argamne"
   },
   en: {
     navHome:"Home", navTickets:"Tickets", navProfile:"Profile", back:"Back",
@@ -200,12 +242,15 @@ var I18N = {
     profileTitle:"Profile", profileSub:"Your details",
     rights:"All rights reserved.", theme:"Theme",
     loading:"Loading…", loadError:"Couldn't load the cars. Check your internet and try again.", retry:"Try again",
-    noCars:"No cars yet", sold:"Sold", birr:"Birr"
+    noCars:"No cars yet", sold:"Sold", birr:"Birr",
+    timeLeft:"Time left", days:"Days", hours:"Hours", minutes:"Minutes", seconds:"Seconds",
+    filled:"filled", ticketsLeft:"tickets left", ticketPrice:"Ticket price", total:"Total",
+    buy:"Buy ticket", soldOut:"Sold out", ended:"Draw closed", carNotFound:"Car not found"
   }
 };
 
 /* ── SMALL HELPERS ─────────────────────────────────────────── */
-var ROUTES = ["home","tickets","profile"];
+var ROUTES = ["home","tickets","profile","car"];
 var LANG_CODES = { am:"አማ", om:"OM", en:"EN" };   // short label shown in the header pill
 function load(key, fallback){ try{ return localStorage.getItem(key) || fallback; }catch(e){ return fallback; } }
 function save(key, value){ try{ localStorage.setItem(key, value); }catch(e){} }
@@ -255,6 +300,9 @@ function loadCars(){
 
 function carCard(car, dict){
   var item = el("div", "car");
+  item.setAttribute("role", "link"); item.tabIndex = 0;
+  item.addEventListener("click", function(){ go("car-" + car.id); });
+  item.addEventListener("keydown", function(e){ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); go("car-" + car.id); } });
   var pic = el("div", "car-img");
   if(car.image_url){
     var im = document.createElement("img");
@@ -275,7 +323,8 @@ function carCard(car, dict){
   return item;
 }
 
-function renderCars(){
+function renderCars(){ renderCarList(); renderCarDetail(); }
+function renderCarList(){
   var box = document.getElementById("carList");
   if(!box) return;
   var dict = I18N[state.lang];
@@ -305,6 +354,132 @@ function renderCars(){
   carsState.rows.forEach(function(car){ box.appendChild(carCard(car, dict)); });
 }
 
+
+/* ── CAR DETAIL: #car-<id> ─────────────────────────────────── */
+var detailTimer = null;
+var detail = { carId: null, qty: 1 };
+function pad2(n){ return (n < 10 ? "0" : "") + n; }
+
+function renderCarDetail(){
+  var box = document.getElementById("carDetail");
+  if(!box) return;
+  if(detailTimer){ clearInterval(detailTimer); detailTimer = null; }
+  var p = parseHash();
+  box.textContent = "";
+  if(p.route !== "car") return;
+  var dict = I18N[state.lang];
+
+  if(carsState.status === "loading"){
+    var sk = el("div", "card skeleton");
+    sk.appendChild(el("div", "sk")); sk.appendChild(el("div", "sk")); sk.appendChild(el("div", "sk"));
+    box.appendChild(sk); return;
+  }
+  var car = null;
+  carsState.rows.forEach(function(r){ if(r.id === p.id) car = r; });
+  if(carsState.status === "error" || !car){
+    var c = el("div", "card note");
+    c.appendChild(el("p", "", carsState.status === "error" ? dict.loadError : dict.carNotFound));
+    var b = el("button", "btn", carsState.status === "error" ? dict.retry : dict.back);
+    b.type = "button";
+    b.addEventListener("click", function(){ if(carsState.status === "error") loadCars(); else go("home"); });
+    c.appendChild(b); box.appendChild(c); return;
+  }
+
+  if(detail.carId !== car.id){ detail.carId = car.id; detail.qty = 1; }
+  var total = Number(car.total_tickets) || 0, sold = Number(car.sold_tickets) || 0;
+  var left = Math.max(total - sold, 0);
+  var pct = total ? Math.min(100, Math.floor(sold / total * 100)) : 0;
+  var price = Number(car.ticket_price) || 0;
+  if(detail.qty > left) detail.qty = Math.max(left, 1);
+
+  // picture
+  var hero = el("div", "hero");
+  if(car.image_url){
+    var im = document.createElement("img");
+    im.alt = car.name; im.src = car.image_url;
+    im.addEventListener("error", function(){ im.remove(); hero.innerHTML = CAR_ICON; });
+    hero.appendChild(im);
+  } else { hero.innerHTML = CAR_ICON; }
+  box.appendChild(hero);
+
+  // title
+  box.appendChild(el("h1", "d-title", car.name));
+  if(car.subtitle) box.appendChild(el("p", "d-sub", car.subtitle));
+
+  // countdown
+  var cells = [];
+  var endMs = car.ends_at ? new Date(car.ends_at).getTime() : NaN;
+  var hasEnd = !isNaN(endMs);
+  if(hasEnd){
+    var tm = el("div", "timer");
+    tm.appendChild(el("p", "timer-title", dict.timeLeft));
+    var grid = el("div", "timer-grid");
+    [dict.days, dict.hours, dict.minutes, dict.seconds].forEach(function(label){
+      var cell = el("div", "t-cell");
+      var num = el("span", "t-num", "00");
+      cell.appendChild(num); cell.appendChild(el("span", "t-lbl", label));
+      grid.appendChild(cell); cells.push(num);
+    });
+    tm.appendChild(grid); box.appendChild(tm);
+  }
+  function tick(){
+    var d = Math.max(endMs - Date.now(), 0), s = Math.floor(d / 1000);
+    var vals = [Math.floor(s / 86400), Math.floor(s % 86400 / 3600), Math.floor(s % 3600 / 60), s % 60];
+    for(var i = 0; i < 4; i++) cells[i].textContent = pad2(vals[i]);
+    return d;
+  }
+  var closed = false;
+  if(hasEnd){
+    closed = tick() <= 0;
+    if(!closed) detailTimer = setInterval(function(){ if(tick() <= 0){ clearInterval(detailTimer); detailTimer = null; renderCarDetail(); } }, 1000);
+  }
+
+  // progress
+  var pr = el("div", "prog-row");
+  pr.appendChild(el("span", "", formatNumber(sold) + " " + dict.sold));
+  var pb = el("b", "", pct + "% " + dict.filled);
+  pr.appendChild(pb); box.appendChild(pr);
+  var bar = el("div", "bar"); bar.setAttribute("role", "progressbar");
+  bar.setAttribute("aria-valuenow", pct); bar.setAttribute("aria-valuemin", 0); bar.setAttribute("aria-valuemax", 100);
+  var fill = el("i"); fill.style.width = pct + "%"; bar.appendChild(fill); box.appendChild(bar);
+  box.appendChild(el("p", "left-note", formatNumber(left) + " " + dict.ticketsLeft));
+
+  // price + quantity
+  var row = el("div", "buy-row");
+  var pc = el("div");
+  pc.appendChild(el("div", "buy-label", dict.ticketPrice));
+  pc.appendChild(el("div", "buy-price", formatNumber(price) + " " + dict.birr));
+  row.appendChild(pc);
+  var q = el("div", "qty");
+  var minus = el("button", "", "\u2212"); minus.type = "button"; minus.setAttribute("aria-label", "\u2212");
+  var plus = el("button", "plus", "+");   plus.type = "button"; plus.setAttribute("aria-label", "+");
+  var out = el("output", "", String(detail.qty));
+  q.appendChild(minus); q.appendChild(out); q.appendChild(plus);
+  row.appendChild(q); box.appendChild(row);
+
+  var tot = el("div", "total-row");
+  tot.appendChild(el("span", "", dict.total));
+  var totVal = el("span", "", "");
+  tot.appendChild(totVal); box.appendChild(tot);
+
+  var unavailable = closed || left <= 0;
+  var buy = el("button", "btn wide", closed ? dict.ended : (left <= 0 ? dict.soldOut : dict.buy));
+  buy.type = "button"; buy.disabled = unavailable;
+  // NEXT STEP: open the buy sheet here (name + phone, payment proof, confirmation)
+  buy.addEventListener("click", function(){ /* step 3 */ });
+  box.appendChild(buy);
+
+  function sync(){
+    out.textContent = detail.qty;
+    totVal.textContent = formatNumber(detail.qty * price) + " " + dict.birr;
+    minus.disabled = detail.qty <= 1 || unavailable;
+    plus.disabled = detail.qty >= left || unavailable;
+  }
+  minus.addEventListener("click", function(){ if(detail.qty > 1){ detail.qty--; sync(); } });
+  plus.addEventListener("click", function(){ if(detail.qty < left){ detail.qty++; sync(); } });
+  sync();
+}
+
 /* ── RENDER: language + theme ──────────────────────────────── */
 function applyLanguage(){
   var dict = I18N[state.lang];
@@ -327,20 +502,24 @@ function applyTheme(){
 }
 
 /* ── ROUTER: #home  #tickets  #profile ─────────────────────── */
-function currentRoute(){
-  var r = location.hash.replace("#", "");
-  return ROUTES.indexOf(r) > -1 ? r : "home";
+function parseHash(){
+  var h = location.hash.replace("#", "");
+  var m = /^car-(\d+)$/.exec(h);                    // #car-3 = detail page of car id 3
+  if(m) return { route: "car", id: Number(m[1]) };
+  return { route: (h !== "car" && ROUTES.indexOf(h) > -1) ? h : "home", id: null };
 }
+function currentRoute(){ return parseHash().route; }
 function render(){
   var route = currentRoute();
   ROUTES.forEach(function(r){
     document.getElementById("view-" + r).classList.toggle("is-active", r === route);
   });
   document.querySelectorAll("#nav button").forEach(function(b){
-    if(b.getAttribute("data-route") === route) b.setAttribute("aria-current", "page");
+    if(b.getAttribute("data-route") === (route === "car" ? "home" : route)) b.setAttribute("aria-current", "page");
     else b.removeAttribute("aria-current");
   });
   document.getElementById("backBtn").hidden = (route === "home");
+  renderCarDetail();
   window.scrollTo(0, 0);
 }
 function go(route){ location.hash = route; }
