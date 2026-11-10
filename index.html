@@ -12,7 +12,7 @@
   --bg:#0d0d0d; --surface:#1b1b1b; --surface-2:#262626; --line:#2c2c2c;
   --text:#f4f4f4; --muted:#8d8d8d;
   --amber:#f5a623; --amber-text:#f5a623; --amber-ink:#1a1100; --amber-tint:rgba(245,166,35,.14);
-  --leaf:#1fa971;
+  --leaf:#1fa971; --lime:#a3d63a;
   --radius:20px; --radius-sm:14px;
   --font:system-ui,-apple-system,"Segoe UI","Noto Sans Ethiopic","Abyssinica SIL",Roboto,sans-serif;
 }
@@ -20,6 +20,7 @@
   --bg:#f5f5f4; --surface:#ffffff; --surface-2:#ececea; --line:#dedcd8;
   --text:#161616; --muted:#6b6b6b;
   --amber:#f5a623; --amber-text:#a35f00; --amber-ink:#1a1100; --amber-tint:rgba(245,166,35,.16);
+  --lime:#5a7d0e;
 }
 
 /* ── BASE ──────────────────────────────────────────────────── */
@@ -61,6 +62,26 @@ main{padding:4px 16px 150px;max-width:640px;margin:0 auto}
 .view .sub{margin:0 0 20px;color:var(--muted)}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
 .scaffold{border-style:dashed;color:var(--muted);text-align:center;padding:36px 20px}
+.cars{display:grid;gap:12px}
+.car{display:flex;align-items:center;gap:14px;padding:12px;background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--radius)}
+.car-img{flex:none;width:96px;height:96px;border-radius:14px;background:var(--surface-2);
+  display:grid;place-items:center;overflow:hidden;color:var(--muted)}
+.car-img img{width:100%;height:100%;object-fit:cover}
+.car-body{min-width:0;flex:1}
+.car-title{font-weight:700;font-size:17px;line-height:1.25;overflow-wrap:anywhere}
+.car-sub{color:var(--lime);font-size:14px;margin-top:2px}
+.car-meta{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;margin-top:8px}
+.car-price{color:var(--amber-text);font-weight:800;font-size:18px}
+.car-sold{color:var(--muted);font-size:13px}
+.note{text-align:center;color:var(--muted)}
+.note p{margin:0 0 14px}
+.btn{min-height:44px;padding:0 22px;border:0;border-radius:var(--radius-sm);background:var(--amber);
+  color:var(--amber-ink);font-weight:700;cursor:pointer}
+.btn:active{transform:scale(.97)}
+.skeleton .car-img,.skeleton .sk{background:var(--surface-2);animation:pulse 1.4s ease-in-out infinite}
+.sk{height:14px;border-radius:7px;margin:8px 0}
+@keyframes pulse{50%{opacity:.45}}
 .footer{text-align:center;color:var(--muted);font-size:13px;padding:36px 0 0}
 
 /* ── BOTTOM NAV ────────────────────────────────────────────── */
@@ -108,7 +129,7 @@ main{padding:4px 16px 150px;max-width:640px;margin:0 auto}
   <section class="view" id="view-home">
     <h1 data-i18n="homeTitle"></h1>
     <p class="sub" data-i18n="homeSub"></p>
-    <div class="card scaffold">Step 2 goes here: the list of cars.</div>
+    <div class="cars" id="carList" aria-live="polite"></div>
   </section>
 
   <section class="view" id="view-tickets">
@@ -146,6 +167,12 @@ main{padding:4px 16px 150px;max-width:640px;margin:0 auto}
 var BRAND_NAME = "Car Lottery";   // <- the client's name shown in the header and footer
 var DEFAULT_LANG = "am";          // am = Amharic, om = Afaan Oromoo, en = English
 
+/* Supabase: the PUBLISHABLE key is safe in a web page because RLS protects the data.
+   NEVER put the secret key or the service-role key in this file. */
+var SUPABASE_URL = "https://pgkhehokzbswycbusdpv.supabase.co";
+var SUPABASE_KEY = "sb_publishable_oswzn51GD00Yj9T5Z8E9LA_F6xYuSBE";
+var CARS_TIMEOUT_MS = 12000;      // give up after 12 seconds on slow internet
+
 /* ── TRANSLATIONS (one place for every word on screen) ────── */
 var I18N = {
   am: {
@@ -153,21 +180,27 @@ var I18N = {
     homeTitle:"መኪኖች", homeSub:"ለመሳተፍ መኪና ይምረጡ",
     ticketsTitle:"የእኔ ቲኬቶች", ticketsSub:"የእርስዎን ግዢዎች ይከታተሉ",
     profileTitle:"መገለጫ", profileSub:"የእርስዎ መረጃ",
-    rights:"ሁሉም መብቱ በህግ የተጠበቀ ነው።", theme:"ገጽታ"
+    rights:"ሁሉም መብቱ በህግ የተጠበቀ ነው።", theme:"ገጽታ",
+    loading:"በመጫን ላይ…", loadError:"መኪኖችን መጫን አልተቻለም። ኢንተርኔትዎን ያረጋግጡ።", retry:"እንደገና ሞክር",
+    noCars:"እስካሁን ምንም መኪና የለም", sold:"የተሸጡ", birr:"Birr"
   },
   om: {
     navHome:"Mana", navTickets:"Tikeetota", navProfile:"Piroofaayilii", back:"Deebi'i",
     homeTitle:"Konkolaattota", homeSub:"Konkolaataa filadhu",
     ticketsTitle:"Tikeetota koo", ticketsSub:"Bittaa kee hordofi",
     profileTitle:"Piroofaayilii", profileSub:"Odeeffannoo kee",
-    rights:"Mirgi hundi eegamaadha.", theme:"Bifa"
+    rights:"Mirgi hundi eegamaadha.", theme:"Bifa",
+    loading:"Fe'aa jira…", loadError:"Konkolaattota fe'uun hin danda'amne. Interneetii kee mirkaneeffadhu.", retry:"Irra deebi'i yaali",
+    noCars:"Amma konkolaataan hin jiru", sold:"Kan gurgurame", birr:"Birr"
   },
   en: {
     navHome:"Home", navTickets:"Tickets", navProfile:"Profile", back:"Back",
     homeTitle:"Cars", homeSub:"Pick a car to join the draw",
     ticketsTitle:"My tickets", ticketsSub:"Follow your purchases",
     profileTitle:"Profile", profileSub:"Your details",
-    rights:"All rights reserved.", theme:"Theme"
+    rights:"All rights reserved.", theme:"Theme",
+    loading:"Loading…", loadError:"Couldn't load the cars. Check your internet and try again.", retry:"Try again",
+    noCars:"No cars yet", sold:"Sold", birr:"Birr"
   }
 };
 
@@ -185,6 +218,93 @@ var state = {
 var SUN  = '<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
 var MOON = '<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>';
 
+/* ── CARS: load from Supabase and draw the list ───────────── */
+var carsState = { status: "loading", rows: [] };   // loading | ready | error
+var CAR_ICON = '<svg width="44" height="44" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 11l1.6-4.2A2 2 0 0 1 8.5 5.5h7a2 2 0 0 1 1.9 1.3L19 11"/><rect x="3" y="11" width="18" height="6" rx="2"/><circle cx="7.5" cy="14" r=".6"/><circle cx="16.5" cy="14" r=".6"/><path d="M6 17v2M18 17v2"/></svg>';
+
+function el(tag, cls, text){
+  var n = document.createElement(tag);
+  if(cls) n.className = cls;
+  if(text !== undefined && text !== null) n.textContent = text;   // textContent = safe, never HTML
+  return n;
+}
+function formatNumber(n){ return Number(n || 0).toLocaleString("en-US"); }
+
+function loadCars(){
+  carsState = { status: "loading", rows: [] };
+  renderCars();
+  if(typeof fetch !== "function"){ carsState = { status: "error", rows: [] }; renderCars(); return; }
+  var ctrl = ("AbortController" in window) ? new AbortController() : null;
+  var timer = setTimeout(function(){ if(ctrl) ctrl.abort(); }, CARS_TIMEOUT_MS);
+  var url = SUPABASE_URL + "/rest/v1/cars"
+    + "?select=id,name,subtitle,ticket_price,total_tickets,sold_tickets,image_url,ends_at"
+    + "&is_active=eq.true&order=id.asc";
+  fetch(url, { headers: { apikey: SUPABASE_KEY }, signal: ctrl ? ctrl.signal : undefined })
+    .then(function(r){ if(!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+    .then(function(rows){
+      clearTimeout(timer);
+      carsState = { status: "ready", rows: Array.isArray(rows) ? rows : [] };
+      renderCars();
+    })
+    .catch(function(){
+      clearTimeout(timer);
+      carsState = { status: "error", rows: [] };
+      renderCars();
+    });
+}
+
+function carCard(car, dict){
+  var item = el("div", "car");
+  var pic = el("div", "car-img");
+  if(car.image_url){
+    var im = document.createElement("img");
+    im.alt = ""; im.loading = "lazy"; im.src = car.image_url;
+    im.addEventListener("error", function(){ im.remove(); pic.innerHTML = CAR_ICON; });
+    pic.appendChild(im);
+  } else {
+    pic.innerHTML = CAR_ICON;
+  }
+  var body = el("div", "car-body");
+  body.appendChild(el("div", "car-title", car.name));
+  if(car.subtitle) body.appendChild(el("div", "car-sub", car.subtitle));
+  var meta = el("div", "car-meta");
+  meta.appendChild(el("span", "car-price", formatNumber(car.ticket_price) + " " + dict.birr));
+  meta.appendChild(el("span", "car-sold", dict.sold + " " + formatNumber(car.sold_tickets) + "/" + formatNumber(car.total_tickets)));
+  body.appendChild(meta);
+  item.appendChild(pic); item.appendChild(body);
+  return item;
+}
+
+function renderCars(){
+  var box = document.getElementById("carList");
+  if(!box) return;
+  var dict = I18N[state.lang];
+  box.textContent = "";
+  if(carsState.status === "loading"){
+    box.setAttribute("aria-busy", "true");
+    for(var i = 0; i < 3; i++){
+      var sk = el("div", "car skeleton");
+      sk.appendChild(el("div", "car-img"));
+      var b = el("div", "car-body");
+      b.appendChild(el("div", "sk")); b.appendChild(el("div", "sk")); b.appendChild(el("div", "sk"));
+      sk.appendChild(b); box.appendChild(sk);
+    }
+    return;
+  }
+  box.removeAttribute("aria-busy");
+  if(carsState.status === "error"){
+    var c = el("div", "card note");
+    c.appendChild(el("p", "", dict.loadError));
+    var btn = el("button", "btn", dict.retry);
+    btn.type = "button";
+    btn.addEventListener("click", loadCars);
+    c.appendChild(btn); box.appendChild(c);
+    return;
+  }
+  if(!carsState.rows.length){ box.appendChild(el("div", "card note", dict.noCars)); return; }
+  carsState.rows.forEach(function(car){ box.appendChild(carCard(car, dict)); });
+}
+
 /* ── RENDER: language + theme ──────────────────────────────── */
 function applyLanguage(){
   var dict = I18N[state.lang];
@@ -198,6 +318,7 @@ function applyLanguage(){
   document.getElementById("footer").textContent = "\u00A9 2026 " + BRAND_NAME + ". " + dict.rights;
   document.getElementById("themeBtn").setAttribute("aria-label", dict.theme);
   document.title = BRAND_NAME;
+  renderCars();
 }
 function applyTheme(){
   document.documentElement.setAttribute("data-theme", state.theme);
@@ -241,6 +362,7 @@ window.addEventListener("hashchange", render);
 applyTheme();
 applyLanguage();
 render();
+loadCars();
 </script>
 </body>
 </html>
